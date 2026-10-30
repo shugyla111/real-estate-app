@@ -2,6 +2,20 @@
 
 A front-end practice project: a real estate agency website (home page, search, offer, testimonials, about, contact).
 
+## Run locally
+
+Requires Node.js 22.13 or newer (SQLite is built in).
+
+```bash
+cd server
+npm install
+npm run seed   # create the database and fill it with demo offers
+npm run dev    # http://localhost:3000, restarts on file changes
+```
+
+The server (Express) serves both the website from `client/` and the API under `/api`.
+The SQLite database file is `server/data/app.db` (not in git; recreate it with `npm run seed`).
+
 ## Demo data
 
 All content is for demonstration only:
