@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testimonials — Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpg" alt="">
+        <span>Real Estate</span>
+      </a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="testimonials.html">Testimonials</a>
+        <a href="about.html">About us</a>
+        <a href="#contact">Contact us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="stage">
+      <div class="stage__bg" aria-hidden="true">TESTIMONIALS</div>
+      <div class="container">
+        <p class="eyebrow">Testimonials</p>
+        <h1 class="stage__title">Trusted by more than <span>2,345 happy clients</span></h1>
+
+        <div class="stage__controls">
+          <button id="prev" type="button" aria-label="Previous review">←</button>
+          <button id="next" type="button" aria-label="Next review">→</button>
+        </div>
+
+        <div class="faces" id="faces"></div>
+
+        <blockquote class="quote" id="quote" aria-live="polite">
+          <p id="quote-text"></p>
+        </blockquote>
+
+        <p class="demo-note">Demo content: names and reviews are fictional, photos are stock images.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="index.html" class="logo"><img src="images/logo.jpg" alt=""><span>Real Estate</span></a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="#">References</a>
+        <a href="about.html">About us</a>
+        <a href="#">Our team</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/testimonials.js"></script>
+</body>
+</html>

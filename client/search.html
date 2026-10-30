@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpg" alt="">
+        <span>Real Estate</span>
+      </a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="testimonials.html">Testimonials</a>
+        <a href="about.html">About us</a>
+        <a href="#contact">Contact us</a>
+      </nav>
+    </div>
+  </header>
+ 
+  <main>
+  <div class="container">
+  <h1 class="page-title">Search for an offer</h1>
+
+  <div class="filters">
+    <input type="text" placeholder="Search of location">
+    <select><option>Property type</option></select>
+    <select><option>Bedrooms</option></select>
+    <select><option>Select price</option></select>
+    <button class="btn">Search</button>
+  </div>
+
+  <div class="results-bar">
+  <p class="results-count">1,492 results found</p>
+  <select class="sort" aria-label="Sort by">
+    <option value="">Sort by</option>
+    <option value="price-asc">Price: low to high</option>
+    <option value="price-desc">Price: high to low</option>
+    <option value="newest">Newest first</option>
+  </select>
+</div>
+
+  <div class="cards">
+    <article class="card">
+      <img src="images/apartment1.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Large 4-room apartment with a beautiful terrace</h3>
+        <p class="card__price">320 000€</p>
+        <p class="card__city">Barcelona IV.</p>
+      </div>
+    </article>
+       <article class="card">
+      <img src="images/apartment2.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Bright and airy 2-bedroom flat near the city center</h3>
+        <p class="card__price">215 000€</p>
+        <p class="card__city">Barcelona IV.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="images/apartment3.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Exclusive 5-room residence with a rooftop terrace</h3>
+        <p class="card__price">480 000€</p>
+        <p class="card__city">Madrid VI.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="images/apartment4.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Newly built 4-room apartment with premium finishes</h3>
+        <p class="card__price">390 000€</p>
+        <p class="card__city">Madrid III.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="images/apartment5.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Charming 2-bedroom flat in a prime urban area</h3>
+        <p class="card__price">310 000€</p>
+        <p class="card__city">Barcelona VII.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="images/apartment6.jpg" alt="">
+      <div class="card__body">
+        <h3 class="card__title">Prestigious 5-bedroom home with a panoramic rooftop</h3>
+        <p class="card__price">650 000€</p>
+        <p class="card__city">Madrid II.</p>
+      </div>
+    </article>
+  </div>
+
+    <div class="show-more">
+      <button class="btn btn--outline">Show more</button>
+    </div>
+  </div>
+
+  <section class="newsletter">
+    <div class="container newsletter__inner">
+      <img class="newsletter__icon" src="images/plane.svg" alt="">
+      <div class="newsletter__content">
+        <h2 class="newsletter__title">Subscribe to newsletter</h2>
+        <p>Get the latest news and interesting offers and real estate</p>
+        <form class="newsletter__form">
+          <input type="email" placeholder="Your e-mail address" required>
+          <button type="submit" class="btn btn--outline">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="index.html" class="logo"><img src="images/logo.jpg" alt=""><span>Real Estate</span></a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="#">References</a>
+        <a href="about.html">About us</a>
+        <a href="#">Our team</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
