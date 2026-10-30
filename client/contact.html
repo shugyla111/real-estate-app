@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact us — Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </svg>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpg" alt="">
+        <span>Real Estate</span>
+      </a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="testimonials.html">Testimonials</a>
+        <a href="about.html">About us</a>
+        <a href="contact.html">Contact us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contact">
+    <div class="container">
+      <p class="eyebrow">Contact us</p>
+      <h1 class="contact__title">Get in touch with our team</h1>
+      <p class="contact__lead">Planning to buy, sell, rent or invest? Ask us anything about properties, prices or viewings, and an agent will get back to you within one working day.</p>
+
+      <div class="contact__grid">
+        <form class="contact-form" id="contact-form" novalidate>
+          <h2>Tell us what you are looking for</h2>
+
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" placeholder="Your full name" autocomplete="name" required>
+
+          <label for="cf-email">Email address</label>
+          <input id="cf-email" name="email" type="email" placeholder="We'll get back to you here" autocomplete="email" required>
+
+          <label for="cf-phone">Phone <span>(optional)</span></label>
+          <input id="cf-phone" name="phone" type="tel" placeholder="+34 ..." autocomplete="tel">
+
+          <label for="cf-topic">I want to</label>
+          <select id="cf-topic" name="topic" required>
+            <option value="">Choose a topic</option>
+            <option value="buy">Buy a property</option>
+            <option value="sell">Sell a property</option>
+            <option value="rent">Rent or rent out</option>
+            <option value="invest">Invest in real estate</option>
+            <option value="other">Something else</option>
+          </select>
+
+          <label for="cf-message">Message</label>
+          <textarea id="cf-message" name="message" rows="5" placeholder="Tell us how we can help" required></textarea>
+
+          <button type="submit" class="contact-form__submit">Send message</button>
+          <p class="contact-form__status" id="cf-status" role="status"></p>
+        </form>
+
+        <div class="contact__side">
+          <h2>Prefer a direct approach?</h2>
+          <ul class="contact__list">
+            <li><svg class="icon"><use href="#i-phone"/></svg> +34 600 000 000</li>
+            <li><svg class="icon"><use href="#i-mail"/></svg> hello@realestate.example</li>
+            <li><svg class="icon"><use href="#i-clock"/></svg> Monday to Friday, 9:00 – 18:00 (CET)</li>
+          </ul>
+
+          <div class="office">
+            <iframe class="office__map" title="Office location on the map" loading="lazy"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=2.1550%2C41.3880%2C2.1750%2C41.3990&amp;layer=mapnik"></iframe>
+            <div class="office__card">
+              <h3>Visit our office</h3>
+              <p><svg class="icon"><use href="#i-pin"/></svg> Passeig de Gràcia, 08007 Barcelona</p>
+              <a class="office__link" href="https://www.openstreetmap.org/#map=16/41.3935/2.1650" target="_blank" rel="noopener">Get directions <svg class="icon"><use href="#i-arrow"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="demo-note">Demo content: the phone number, email and office address are placeholders, and the form does not send messages.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="index.html" class="logo"><img src="images/logo.jpg" alt=""><span>Real Estate</span></a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="#">References</a>
+        <a href="about.html">About us</a>
+        <a href="#">Our team</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/contact.js"></script>
+</body>
+</html>

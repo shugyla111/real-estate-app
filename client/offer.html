@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offer — Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpg" alt="">
+        <span>Real Estate</span>
+      </a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="testimonials.html">Testimonials</a>
+        <a href="about.html">About us</a>
+        <a href="contact.html">Contact us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+  <!-- Offer page: filled in by js/offer.js from the ?id= in the address -->
+  <div class="container offer" id="offer" hidden>
+    <a href="search.html" class="back">&larr; Back to search</a>
+    <h1 class="offer__title" id="o-title"></h1>
+    <p class="offer__city" id="o-city"></p>
+
+    <div class="offer__layout">
+      <div class="offer__main">
+
+        <!-- 2. Gallery -->
+        <div class="gallery">
+          <button class="gallery__main" id="g-main" type="button" aria-label="Open photo in full screen">
+            <img id="g-main-img" alt="">
+          </button>
+          <div class="gallery__thumbs" id="g-thumbs"></div>
+        </div>
+
+        <ul class="facts" id="o-facts"></ul>
+
+        <h2>Description</h2>
+        <div id="o-desc"></div>
+
+        <h2>Brief characteristics</h2>
+        <dl class="chars" id="o-chars"></dl>
+
+        <!-- 1. Mortgage calculator -->
+        <section class="mortgage" aria-labelledby="m-title">
+          <h2 id="m-title">Mortgage calculator</h2>
+          <div class="mortgage__grid">
+            <div class="mortgage__controls">
+              <label for="m-down">Down payment <output id="m-down-out" for="m-down"></output></label>
+              <input type="range" id="m-down" min="10" max="50" step="5" value="20">
+
+              <label for="m-term">Term <output id="m-term-out" for="m-term"></output></label>
+              <input type="range" id="m-term" min="5" max="30" step="1" value="25">
+
+              <label for="m-rate">Interest rate, % per year</label>
+              <input type="number" id="m-rate" min="0" max="15" step="0.1" value="3.5">
+            </div>
+
+            <div class="mortgage__result">
+              <p class="mortgage__label">Monthly payment</p>
+              <p class="mortgage__payment" id="m-payment" aria-live="polite"></p>
+              <ul class="mortgage__list">
+                <li><span>Loan amount</span><strong id="m-loan"></strong></li>
+                <li><span>Total interest</span><strong id="m-interest"></strong></li>
+              </ul>
+            </div>
+          </div>
+          <p class="note">Estimate only. It is not a loan offer and does not include taxes or bank fees.</p>
+        </section>
+      </div>
+
+      <!-- 3. Book a viewing -->
+      <aside class="booking" aria-labelledby="b-title">
+        <h2 id="b-title">Book a viewing</h2>
+        <form id="booking-form" novalidate>
+          <label for="b-date">Date</label>
+          <input type="date" id="b-date">
+          <p class="field-error" id="b-date-err" role="alert"></p>
+
+          <fieldset class="slots">
+            <legend>Time</legend>
+            <div class="slots__grid" id="b-slots"></div>
+          </fieldset>
+          <p class="field-error" id="b-time-err" role="alert"></p>
+
+          <label for="b-name">Full name</label>
+          <input type="text" id="b-name" autocomplete="name">
+          <p class="field-error" id="b-name-err" role="alert"></p>
+
+          <label for="b-email">Email</label>
+          <input type="email" id="b-email" autocomplete="email">
+          <p class="field-error" id="b-email-err" role="alert"></p>
+
+          <label for="b-msg">Message (optional)</label>
+          <textarea id="b-msg" rows="3"></textarea>
+
+          <button type="submit" class="btn btn--block">Book viewing</button>
+        </form>
+        <p class="booking__ok" id="b-ok" role="status" hidden></p>
+      </aside>
+    </div>
+
+    <section class="similar">
+      <h2>You might be interested in</h2>
+      <div class="cards" id="o-similar"></div>
+    </section>
+  </div>
+
+  <p class="container not-found" id="not-found" hidden>
+    We could not find this offer. <a href="search.html">Back to search</a>
+  </p>
+
+  <!-- Full-screen photo viewer -->
+  <dialog id="lightbox" class="lightbox" aria-label="Photo viewer">
+    <button type="button" class="lightbox__close" id="lb-close" aria-label="Close">&times;</button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" id="lb-prev" aria-label="Previous photo">&lsaquo;</button>
+    <img id="lb-img" alt="" draggable="false">
+    <button type="button" class="lightbox__nav lightbox__nav--next" id="lb-next" aria-label="Next photo">&rsaquo;</button>
+    <p class="lightbox__count" id="lb-count"></p>
+  </dialog>
+
+  <section class="newsletter">
+    <div class="container newsletter__inner">
+      <img class="newsletter__icon" src="images/plane.svg" alt="">
+      <div class="newsletter__content">
+        <h2 class="newsletter__title">Subscribe to newsletter</h2>
+        <p>Get the latest news and interesting offers and real estate</p>
+        <form class="newsletter__form">
+          <input type="email" placeholder="Your e-mail address" required>
+          <button type="submit" class="btn btn--outline">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="index.html" class="logo"><img src="images/logo.jpg" alt=""><span>Real Estate</span></a>
+      <nav class="nav">
+        <a href="offer.html">Top offers</a>
+        <a href="search.html">Search in offers</a>
+        <a href="#">References</a>
+        <a href="about.html">About us</a>
+        <a href="#">Our team</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/offer.js"></script>
+</body>
+</html>
