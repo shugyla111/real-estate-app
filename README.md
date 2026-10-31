@@ -24,7 +24,7 @@ All content is for demonstration only:
 - Testimonials (`client/testimonials.html`) use fictional names and reviews written for this project. The photos are stock images and do not show real clients.
 - The About page (`client/about.html`) uses fictional team members and figures.
 - The Contact page (`client/contact.html`) uses a placeholder phone, email and address; the form only shows a message and sends nothing.
-- The Offer page (`client/offer.html`) uses demo property data and descriptions from `client/js/offer.js`; viewing bookings are only saved in the browser (localStorage).
+- The Offer page (`client/offer.html`) uses demo property data from the database (`server/data/offers.json`, loaded by `npm run seed`); viewing bookings are only saved in the browser (localStorage).
 
 ## Credits
 

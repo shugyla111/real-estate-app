@@ -1,8 +1,7 @@
 /* ------------------------------------------------------------------
    Search page: "Filter by" and "Sort by" panels.
-   For now the demo offers (js/offers-data.js) are filtered in the browser.
-   The chosen filters are also kept in the address (search.html?beds=2&sort=price-asc),
-   so the same query string can later be sent to the backend.
+   The chosen filters are kept in the address (search.html?beds=2&sort=price-asc)
+   and the same query string is sent to the server: GET /api/offers?beds=2&sort=price-asc
 ------------------------------------------------------------------- */
 
 const $ = (id) => document.getElementById(id);
@@ -31,7 +30,6 @@ panels.forEach(({ toggle, panel }) => {
 function getFilters() {
   const data = new FormData(form);
   return {
-    location: data.get('location').trim().toLowerCase(),
     minPrice: Number(data.get('minPrice')) || 0,
     maxPrice: Number(data.get('maxPrice')) || Infinity,
     beds: data.getAll('beds').map(Number),
@@ -40,39 +38,9 @@ function getFilters() {
     area: data.getAll('area'),
     type: data.getAll('type'),
     year: data.getAll('year'),
-    terrace: data.get('terrace') === 'yes',
-    sort: data.get('sort')
+    terrace: data.get('terrace') === 'yes'
   };
 }
-
-// "100-149" -> is 120 inside? Empty side means no limit: "200-" or "-1999".
-const inRange = (value, range) => {
-  const [min, max] = range.split('-');
-  return (min === '' || value >= Number(min)) && (max === '' || value <= Number(max));
-};
-
-// The last checkbox in a group means "and more": 4+ beds, 3+ baths
-const matchCount = (value, chosen, top) => chosen.some((n) => (n === top ? value >= n : value === n));
-
-function matches(o, f) {
-  if (f.location && !`${o.city} ${o.title}`.toLowerCase().includes(f.location)) return false;
-  if (o.price < f.minPrice || o.price > f.maxPrice) return false;
-  if (f.beds.length && !matchCount(o.beds, f.beds, 4)) return false;
-  if (f.baths.length && !matchCount(o.baths, f.baths, 3)) return false;
-  if (f.city.length && !f.city.some((c) => o.city.startsWith(c))) return false;
-  if (f.area.length && !f.area.some((r) => inRange(o.area, r))) return false;
-  if (f.type.length && !f.type.includes(o.type)) return false;
-  if (f.year.length && !f.year.some((r) => inRange(o.year, r))) return false;
-  if (f.terrace && o.terrace !== 'Yes') return false;
-  return true;
-}
-
-const sorters = {
-  'price-asc': (a, b) => a.price - b.price,
-  'price-desc': (a, b) => b.price - a.price,
-  'area-desc': (a, b) => b.area - a.area,
-  'newest': (a, b) => b.year - a.year
-};
 
 /* --------------------------------- render --------------------------------- */
 const card = (o) => `
@@ -99,35 +67,52 @@ const card = (o) => `
     </a>
   </article>`;
 
-function update() {
-  const f = getFilters();
+// Form -> "beds=2&sort=price-asc" (empty fields are left out)
+function queryString() {
+  const params = new URLSearchParams();
+  for (const [key, value] of new FormData(form)) if (value !== '') params.append(key, value);
+  return params.toString();
+}
 
-  // BACKEND LATER: replace the next lines with
-  // fetch(`/api/offers?${new URLSearchParams(new FormData(form))}`).then((r) => r.json()).then(render)
-  const list = offers.filter((o) => matches(o, f));
-  if (sorters[f.sort]) list.sort(sorters[f.sort]);
-
-  results.innerHTML = list.map(card).join('');
-  $('results-empty').hidden = list.length > 0;
-  $('results-count').textContent = `${list.length} ${list.length === 1 ? 'offer' : 'offers'} found`;
-
+function showFilterCount() {
   // Small number on the "Filter by" button: how many filter groups are in use
+  const f = getFilters();
   const used = ['beds', 'baths', 'city', 'area', 'type', 'year'].filter((k) => f[k].length).length
     + (f.minPrice > 0 || f.maxPrice < Infinity ? 1 : 0) + (f.terrace ? 1 : 0);
   $('filter-count').textContent = used;
   $('filter-count').hidden = used === 0;
-
-  saveToAddress();
 }
 
-/* ------------------------ keep filters in the address ------------------------ */
-function saveToAddress() {
-  const params = new URLSearchParams();
-  for (const [key, value] of new FormData(form)) if (value !== '') params.append(key, value);
-  const query = params.toString();
+function render(list) {
+  results.innerHTML = list.map(card).join('');
+  $('results-empty').hidden = list.length > 0;
+  $('results-count').textContent = `${list.length} ${list.length === 1 ? 'offer' : 'offers'} found`;
+}
+
+// Only the answer to the latest request is shown, even if an older one arrives later
+let lastRequest = 0;
+
+async function update() {
+  const query = queryString();
+  const request = ++lastRequest;
   history.replaceState(null, '', query ? `?${query}` : location.pathname);
+  showFilterCount();
+
+  try {
+    const res = await fetch(`/api/offers?${query}`);
+    const data = await res.json();
+    if (request !== lastRequest) return;
+    if (!res.ok) throw new Error(data.error);
+    render(data.items);
+  } catch {
+    if (request !== lastRequest) return;
+    results.innerHTML = '';
+    $('results-empty').hidden = true;
+    $('results-count').textContent = 'Could not load offers. Please try again later.';
+  }
 }
 
+/* ------------------- restore filters from the address ------------------- */
 function loadFromAddress() {
   const params = new URLSearchParams(location.search);
   for (const [key, value] of params) {

@@ -2,14 +2,12 @@
    Offer page. The address decides which offer is shown: offer.html?id=3
 ------------------------------------------------------------------- */
 
-// The list of offers (const offers) comes from js/offers-data.js, loaded before this file.
-
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 const params = new URLSearchParams(location.search);
 const offerId = Number(params.get('id')) || 1;
-const offer = offers.find((o) => o.id === offerId);
+let offer; // loaded from GET /api/offers/:id in start()
 
 /* ------------------------------ page text ------------------------------ */
 function renderOffer() {
@@ -27,7 +25,7 @@ function renderOffer() {
 
   $('o-desc').innerHTML = [
     `This ${offer.type.toLowerCase()} in ${offer.city} offers ${offer.area} m² of living space, ${offer.rooms} rooms and ${offer.baths} bathroom${offer.baths > 1 ? 's' : ''}.`,
-    'Replace this demo text with your own description of the property: the layout, the light, the neighbourhood and what makes it special.'
+    offer.description || 'Replace this demo text with your own description of the property: the layout, the light, the neighbourhood and what makes it special.'
   ].map((p) => `<p>${p}</p>`).join('');
 
   const chars = {
@@ -38,7 +36,7 @@ function renderOffer() {
     'Bedrooms': offer.beds,
     'Usable area': `${offer.area} m²`,
     'Bathrooms': offer.baths,
-    'Terrace': offer.terrace,
+    'Terrace': offer.terrace ? 'Yes' : 'No',
     'Year built': offer.year
   };
   $('o-chars').innerHTML = Object.entries(chars)
@@ -250,7 +248,7 @@ function initBooking() {
 }
 
 /* ------------------------- similar offers (cards) ------------------------- */
-function renderSimilar() {
+function renderSimilar(offers) {
   $('o-similar').innerHTML = offers
     .filter((o) => o.id !== offer.id)
     .sort((a, b) => Math.abs(a.price - offer.price) - Math.abs(b.price - offer.price))
@@ -269,13 +267,29 @@ function renderSimilar() {
 }
 
 /* -------------------------------- start -------------------------------- */
-if (!offer) {
-  $('not-found').hidden = false;
-} else {
+async function start() {
+  try {
+    const res = await fetch(`/api/offers/${offerId}`);
+    if (res.status === 404) { $('not-found').hidden = false; return; }
+    if (!res.ok) throw new Error(`Server answered ${res.status}`);
+    offer = await res.json();
+  } catch {
+    $('not-found').textContent = 'Could not load this offer. Please try again later.';
+    $('not-found').hidden = false;
+    return;
+  }
+
   $('offer').hidden = false;
   renderOffer();
   initGallery();
   initMortgage();
   initBooking();
-  renderSimilar();
+
+  // Similar offers are a bonus: if they fail to load, the section just stays empty
+  try {
+    const res = await fetch('/api/offers');
+    if (res.ok) renderSimilar((await res.json()).items);
+  } catch { /* leave the section empty */ }
 }
+
+start();
