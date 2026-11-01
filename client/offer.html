@@ -43,13 +43,18 @@
         <img src="images/logo.svg" alt="">
         <span>Real Estate</span>
       </a>
-      <nav class="nav">
+      <nav class="nav" id="site-nav">
         <a href="search.html">Search in offers</a>
         <a href="offer.html">Buy a home</a>
         <a href="testimonials.html">Testimonials</a>
         <a href="about.html">About us</a>
         <a href="contact.html">Contact us</a>
       </nav>
+      <div class="header__actions">
+        <button type="button" class="burger" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -225,6 +230,8 @@
       </div>
     </div>
   </footer>
+
+  <script src="js/menu.js"></script>
 
   <script src="js/offer.js"></script>
   <script src="js/newsletter.js"></script>
