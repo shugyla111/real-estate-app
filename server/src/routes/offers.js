@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db.js';
+import { SLOTS, dateError, takenTimes } from '../booking.js';
 
 export const offersRouter = Router();
 
@@ -109,4 +110,18 @@ offersRouter.get('/:id', (req, res) => {
   const row = Number.isInteger(id) ? db.prepare('SELECT * FROM offers WHERE id = ?').get(id) : undefined;
   if (!row) return res.status(404).json({ error: 'Offer not found' });
   res.json(withImages([row])[0]);
+});
+
+// GET /api/offers/3/slots?date=2026-11-12 -> which viewing times are still free that day
+offersRouter.get('/:id/slots', (req, res) => {
+  const id = Number(req.params.id);
+  const offer = Number.isInteger(id) ? db.prepare('SELECT id FROM offers WHERE id = ?').get(id) : undefined;
+  if (!offer) return res.status(404).json({ error: 'Offer not found' });
+
+  const { date } = req.query;
+  const error = dateError(date);
+  if (error) return res.status(400).json({ error });
+
+  const taken = takenTimes(id, date);
+  res.json({ date, slots: SLOTS.map((time) => ({ time, free: !taken.includes(time) })) });
 });

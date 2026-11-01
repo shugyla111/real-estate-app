@@ -14,6 +14,18 @@ npm run dev    # http://localhost:3000, restarts on file changes
 ```
 
 The server (Express) serves both the website from `client/` and the API under `/api`.
+Open the site through the server (http://localhost:3000), not as a file or via Live Server, otherwise the API calls fail.
+
+### API
+
+| Method | Address | What it does |
+|---|---|---|
+| GET | `/api/offers?location=&minPrice=&maxPrice=&beds=&baths=&city=&area=&type=&year=&terrace=yes&sort=` | List of offers with filters |
+| GET | `/api/offers/:id` | One offer |
+| GET | `/api/offers/:id/slots?date=YYYY-MM-DD` | Free viewing times for a day |
+| POST | `/api/viewings` | Book a viewing (`409` if the time is taken) |
+| POST | `/api/contact` | Message from the contact form |
+| POST | `/api/newsletter` | Newsletter subscription |
 The SQLite database file is `server/data/app.db` (not in git; recreate it with `npm run seed`).
 
 ## Demo data
@@ -23,8 +35,8 @@ All content is for demonstration only:
 - Listings, prices and statistics are sample data.
 - Testimonials (`client/testimonials.html`) use fictional names and reviews written for this project. The photos are stock images and do not show real clients.
 - The About page (`client/about.html`) uses fictional team members and figures.
-- The Contact page (`client/contact.html`) uses a placeholder phone, email and address; the form only shows a message and sends nothing.
-- The Offer page (`client/offer.html`) uses demo property data from the database (`server/data/offers.json`, loaded by `npm run seed`); viewing bookings are only saved in the browser (localStorage).
+- The Contact page (`client/contact.html`) uses a placeholder phone, email and address. Messages from the form are saved in the local database; nobody receives them.
+- The Offer page (`client/offer.html`) uses demo property data from the database (`server/data/offers.json`, loaded by `npm run seed`). Viewing bookings are saved in the local database.
 
 ## Credits
 

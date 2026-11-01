@@ -138,10 +138,12 @@ function initMortgage() {
 }
 
 /* --------------------------- 3. Book a viewing --------------------------- */
+// Free times come from GET /api/offers/:id/slots, bookings go to POST /api/viewings.
+// The server checks everything again; the checks here only give quick hints.
 function initBooking() {
-  const SLOTS = ['10:00', '11:00', '12:00', '13:00', '15:00', '16:00', '17:00', '18:00'];
   const form = $('booking-form');
   const dateEl = $('b-date');
+  const ERR = { date: 'b-date-err', time: 'b-time-err', name: 'b-name-err', email: 'b-email-err' };
 
   // Local dates (toISOString would shift the day because of the time zone)
   const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -153,18 +155,6 @@ function initBooking() {
   dateEl.min = toISO(minDate);
   dateEl.max = toISO(maxDate);
 
-  // Bookings are kept in the browser for now. Later they go to the database.
-  const loadBookings = () => { try { return JSON.parse(localStorage.getItem('viewings')) || []; } catch { return []; } };
-  const saveBookings = (list) => { try { localStorage.setItem('viewings', JSON.stringify(list)); } catch { /* storage blocked */ } };
-
-  function isTaken(date, time) {
-    if (loadBookings().some((b) => b.offerId === offer.id && b.date === date && b.time === time)) return true;
-    // Demo: make some slots look already booked (same result every time for the same day)
-    let h = 0;
-    for (const ch of `${offer.id}|${date}|${time}`) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-    return h % 4 === 0;
-  }
-
   function dateError(value) {
     if (!value) return 'Please choose a date.';
     const d = parseISO(value);
@@ -174,33 +164,41 @@ function initBooking() {
     return '';
   }
 
-  function renderSlots() {
+  const hint = (text) => { $('b-slots').innerHTML = `<p class="slots__hint">${text}</p>`; };
+  let slotsRequest = 0;
+
+  async function renderSlots() {
     const value = dateEl.value;
     const err = dateError(value);
     $('b-date-err').textContent = value ? err : '';
     $('b-time-err').textContent = '';
+    if (err) { hint('Choose a date to see free times.'); return; }
 
-    if (err) {
-      $('b-slots').innerHTML = '<p class="slots__hint">Choose a date to see free times.</p>';
-      return;
+    const request = ++slotsRequest;
+    hint('Loading free times…');
+    try {
+      const res = await fetch(`/api/offers/${offer.id}/slots?date=${value}`);
+      const data = await res.json();
+      if (request !== slotsRequest) return; // the date was changed again meanwhile
+      if (!res.ok) { $('b-date-err').textContent = data.error; hint('Choose a date to see free times.'); return; }
+
+      if (!data.slots.some((s) => s.free)) { hint('No free times on this day. Please pick another one.'); return; }
+      $('b-slots').innerHTML = data.slots.map((s) =>
+        `<label class="slot"><input type="radio" name="time" value="${s.time}"${s.free ? '' : ' disabled'}><span>${s.time}</span></label>`
+      ).join('');
+    } catch {
+      if (request === slotsRequest) hint('Could not load free times. Please try again later.');
     }
-    if (SLOTS.every((t) => isTaken(value, t))) {
-      $('b-slots').innerHTML = '<p class="slots__hint">No free times on this day. Please pick another one.</p>';
-      return;
-    }
-    $('b-slots').innerHTML = SLOTS.map((t) =>
-      `<label class="slot"><input type="radio" name="time" value="${t}"${isTaken(value, t) ? ' disabled' : ''}><span>${t}</span></label>`
-    ).join('');
   }
 
-  const clearErrors = () => ['b-date-err', 'b-time-err', 'b-name-err', 'b-email-err'].forEach((id) => { $(id).textContent = ''; });
+  const clearErrors = () => Object.values(ERR).forEach((id) => { $(id).textContent = ''; });
 
   dateEl.addEventListener('change', renderSlots);
   $('b-slots').addEventListener('change', () => { $('b-time-err').textContent = ''; });
   $('b-name').addEventListener('input', () => { $('b-name-err').textContent = ''; });
   $('b-email').addEventListener('input', () => { $('b-email-err').textContent = ''; });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     $('b-ok').hidden = true;
 
@@ -219,29 +217,40 @@ function initBooking() {
     const firstBad = problems.find(([, , msg]) => msg);
     if (firstBad) { firstBad[0].focus(); return; }
 
-    const booking = {
-      offerId: offer.id,
-      date: dateEl.value,
-      time,
-      name,
-      email,
-      message: $('b-msg').value.trim(),
-      createdAt: new Date().toISOString()
-    };
+    const booking = { offerId: offer.id, date: dateEl.value, time, name, email, message: $('b-msg').value.trim() };
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
 
-    // BACKEND LATER: replace the two lines below with
-    // fetch('/api/viewings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(booking) })
-    const list = loadBookings();
-    list.push(booking);
-    saveBookings(list);
+    try {
+      const res = await fetch('/api/viewings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(booking)
+      });
+      const data = await res.json();
 
-    form.reset();
-    clearErrors();
-    renderSlots();
+      if (!res.ok) {
+        // 400: wrong fields, 409: somebody took this time a moment ago
+        Object.entries(data.errors || {}).forEach(([field, msg]) => { if (ERR[field]) $(ERR[field]).textContent = msg; });
+        if (!data.errors) $('b-time-err').textContent = data.error;
+        if (res.status === 409) {
+          await renderSlots();
+          $('b-time-err').textContent = data.errors.time;
+        }
+        return;
+      }
 
-    const nice = parseISO(booking.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-    $('b-ok').textContent = `Thank you, ${name}! Your viewing is booked for ${nice} at ${time}.`;
-    $('b-ok').hidden = false;
+      form.reset();
+      clearErrors();
+      hint('Choose a date to see free times.');
+      const nice = parseISO(booking.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      $('b-ok').textContent = `Thank you, ${name}! Your viewing is booked for ${nice} at ${time}.`;
+      $('b-ok').hidden = false;
+    } catch {
+      $('b-time-err').textContent = 'Could not send the booking. Please try again later.';
+    } finally {
+      button.disabled = false;
+    }
   });
 
   renderSlots();

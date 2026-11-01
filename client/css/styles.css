@@ -663,3 +663,7 @@ body.lb-open { overflow: hidden; }
   .filter-grid--4, .filter-grid--3 { grid-template-columns: 1fr; }
   .search__location { max-width: none; }
 }
+
+.newsletter__status { margin-top: 10px; font-size: 14px; color: #0f8a7e; }
+.newsletter__status:empty { display: none; }
+.newsletter__status.is-error { color: #c0392b; }
