@@ -1,6 +1,6 @@
 # Real Estate
 
-A front-end practice project: a real estate agency website (home page, search, offer, testimonials, about, contact).
+A front-end practice project: a real estate agency website (home page, search, offer, saved offers, testimonials, about, contact).
 
 ## Run locally
 
@@ -36,6 +36,7 @@ All content is for demonstration only:
 - Listings, prices and statistics are sample data.
 - Testimonials (`client/testimonials.html`) use fictional names and reviews written for this project. The photos are stock images and do not show real clients.
 - The About page (`client/about.html`) uses fictional team members and figures.
+- Saved offers (the heart on cards, `client/favorites.html`) are kept in the visitor's browser (localStorage); visitors do not need an account.
 - The Contact page (`client/contact.html`) uses a placeholder phone, email and address. Messages from the form are saved in the local database; nobody receives them.
 - The Offer page (`client/offer.html`) uses demo property data from the database (`server/data/offers.json`, loaded by `npm run seed`). Viewing bookings are saved in the local database.
 

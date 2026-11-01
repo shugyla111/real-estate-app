@@ -52,6 +52,10 @@
         <a href="contact.html">Contact us</a>
       </nav>
       <div class="header__actions">
+        <a href="favorites.html" class="header__fav" aria-label="Saved offers">
+          <svg class="icon"><use href="#i-heart"/></svg>
+          <span class="header__fav-count" data-fav-count hidden></span>
+        </a>
         <button type="button" class="burger" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -173,6 +177,7 @@
     </div>
   </footer>
 
+  <script src="js/favorites.js"></script>
   <script src="js/menu.js"></script>
 
   <script src="js/contact.js"></script>

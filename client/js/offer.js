@@ -3,7 +3,6 @@
 ------------------------------------------------------------------- */
 
 const $ = (id) => document.getElementById(id);
-const fmt = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 const params = new URLSearchParams(location.search);
 const offerId = Number(params.get('id')) || 1;
@@ -14,6 +13,8 @@ function renderOffer() {
   document.title = `${offer.title} | Real Estate`;
   $('o-title').textContent = offer.title;
   $('o-city').textContent = offer.city;
+  $('o-save').dataset.fav = offer.id;
+  favorites.sync();
 
   $('o-facts').innerHTML = [
     [`${fmt(offer.price)}€`, 'Price'],
@@ -262,17 +263,8 @@ function renderSimilar(offers) {
     .filter((o) => o.id !== offer.id)
     .sort((a, b) => Math.abs(a.price - offer.price) - Math.abs(b.price - offer.price))
     .slice(0, 3)
-    .map((o) => `
-      <article class="card">
-        <a class="card__link" href="offer.html?id=${o.id}">
-          <img src="${o.images[0]}" alt="">
-          <div class="card__body">
-            <h3 class="card__title">${o.title}</h3>
-            <p class="card__price">${fmt(o.price)}€</p>
-            <p class="card__city">${o.city}</p>
-          </div>
-        </a>
-      </article>`).join('');
+    .map(offerCard).join('');
+  favorites.sync();
 }
 
 /* -------------------------------- start -------------------------------- */

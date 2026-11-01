@@ -70,6 +70,14 @@ function buildQuery(q) {
 
   if (q.terrace === 'yes') where.push('terrace = 1');
 
+  // ?id=1&id=4 -> only these offers (used by the "Saved offers" page)
+  const ids = list(q.id).map((v) => {
+    const n = Number(v);
+    if (!Number.isInteger(n) || n < 1) throw new BadRequest('"id" must be a whole number');
+    return n;
+  });
+  if (ids.length) { where.push(`id IN (${ids.map(() => '?').join(', ')})`); params.push(...ids); }
+
   const sort = q.sort ? SORTS[q.sort] : 'id ASC';
   if (!sort) throw new BadRequest(`Unknown sort "${q.sort}"`);
 
@@ -91,7 +99,7 @@ function withImages(rows) {
   }));
 }
 
-// GET /api/offers?location=barcelona&beds=2&beds=4&sort=price-asc
+// GET /api/offers?location=barcelona&beds=2&beds=4&sort=price-asc  (or ?id=1&id=4)
 offersRouter.get('/', (req, res) => {
   try {
     const { sql, params } = buildQuery(req.query);

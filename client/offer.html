@@ -51,6 +51,10 @@
         <a href="contact.html">Contact us</a>
       </nav>
       <div class="header__actions">
+        <a href="favorites.html" class="header__fav" aria-label="Saved offers">
+          <svg class="icon"><use href="#i-heart"/></svg>
+          <span class="header__fav-count" data-fav-count hidden></span>
+        </a>
         <button type="button" class="burger" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -62,8 +66,15 @@
   <!-- Offer page: filled in by js/offer.js from the ?id= in the address -->
   <div class="container offer" id="offer" hidden>
     <a href="search.html" class="back">&larr; Back to search</a>
-    <h1 class="offer__title" id="o-title"></h1>
-    <p class="offer__city" id="o-city"></p>
+    <div class="offer__head">
+      <div>
+        <h1 class="offer__title" id="o-title"></h1>
+        <p class="offer__city" id="o-city"></p>
+      </div>
+      <button type="button" class="save-offer" id="o-save" aria-pressed="false">
+        <svg class="icon"><use href="#i-heart"/></svg> <span class="save-offer__text">Save</span>
+      </button>
+    </div>
 
     <div class="offer__layout">
       <div class="offer__main">
@@ -231,8 +242,10 @@
     </div>
   </footer>
 
+  <script src="js/favorites.js"></script>
   <script src="js/menu.js"></script>
 
+  <script src="js/cards.js"></script>
   <script src="js/offer.js"></script>
   <script src="js/newsletter.js"></script>
 </body>

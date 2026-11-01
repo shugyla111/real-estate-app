@@ -5,7 +5,6 @@
 ------------------------------------------------------------------- */
 
 const $ = (id) => document.getElementById(id);
-const fmt = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 const form = $('search-form');
 const results = $('results');
@@ -42,30 +41,7 @@ function getFilters() {
   };
 }
 
-/* --------------------------------- render --------------------------------- */
-const card = (o) => `
-  <article class="card">
-    <a class="card__link" href="offer.html?id=${o.id}">
-      <div class="card__media">
-        <img src="${o.images[0]}" alt="">
-        <span class="badge">For sale</span>
-      </div>
-      <div class="card__body">
-        <p class="card__tag">${o.type}</p>
-        <h3 class="card__title">${o.title}</h3>
-        <p class="card__city"><svg class="icon"><use href="#i-pin"/></svg> ${o.city}</p>
-        <ul class="specs">
-          <li><svg class="icon"><use href="#i-area"/></svg> ${o.area} m²</li>
-          <li><svg class="icon"><use href="#i-bed"/></svg> ${o.beds}</li>
-          <li><svg class="icon"><use href="#i-bath"/></svg> ${o.baths}</li>
-        </ul>
-        <div class="card__footer">
-          <span class="card__price">${fmt(o.price)}€</span>
-          <span class="link-arrow">Discover <svg class="icon"><use href="#i-arrow"/></svg></span>
-        </div>
-      </div>
-    </a>
-  </article>`;
+// Cards come from offerCard() in js/cards.js
 
 // Form -> "beds=2&sort=price-asc" (empty fields are left out)
 function queryString() {
@@ -84,7 +60,8 @@ function showFilterCount() {
 }
 
 function render(list) {
-  results.innerHTML = list.map(card).join('');
+  results.innerHTML = list.map(offerCard).join('');
+  favorites.sync();
   $('results-empty').hidden = list.length > 0;
   $('results-count').textContent = `${list.length} ${list.length === 1 ? 'offer' : 'offers'} found`;
 }

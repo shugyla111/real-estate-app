@@ -59,6 +59,12 @@ test('city, type, area and year ranges', async () => {
   assert.deepEqual(await ids('?year=-1999'), [5]);
 });
 
+test('several offers by id (saved offers page)', async () => {
+  assert.deepEqual(await ids('?id=4&id=1'), [1, 4]);
+  assert.deepEqual(await ids('?id=99'), []);
+  assert.equal((await api.get('/api/offers?id=abc')).status, 400);
+});
+
 test('filters combine with AND', async () => {
   assert.deepEqual(await ids('?city=Madrid&terrace=yes&maxPrice=500000'), [3, 4]);
 });

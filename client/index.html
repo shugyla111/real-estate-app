@@ -51,6 +51,10 @@
         <a href="contact.html">Contact us</a>
       </nav>
       <div class="header__actions">
+        <a href="favorites.html" class="header__fav" aria-label="Saved offers">
+          <svg class="icon"><use href="#i-heart"/></svg>
+          <span class="header__fav-count" data-fav-count hidden></span>
+        </a>
         <button type="button" class="burger" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -135,7 +139,7 @@
           <div class="card__media">
             <img src="images/apartment1.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="1" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -157,7 +161,7 @@
           <div class="card__media">
             <img src="images/apartment2.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="2" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -179,7 +183,7 @@
           <div class="card__media">
             <img src="images/apartment3.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="3" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -201,7 +205,7 @@
           <div class="card__media">
             <img src="images/apartment4.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="4" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -223,7 +227,7 @@
           <div class="card__media">
             <img src="images/apartment5.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="5" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -245,7 +249,7 @@
           <div class="card__media">
             <img src="images/apartment6.jpg" alt="">
             <span class="badge">Available</span>
-            <button class="like" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
+            <button class="like" type="button" data-fav="6" aria-pressed="false" aria-label="Save to favorites"><svg class="icon"><use href="#i-heart"/></svg></button>
           </div>
           <div class="card__body">
             <p class="card__tag">For sale</p>
@@ -336,6 +340,7 @@
     </div>
   </footer>
 
+  <script src="js/favorites.js"></script>
   <script src="js/menu.js"></script>
 </body>
 </html>
