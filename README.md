@@ -11,6 +11,7 @@ cd server
 npm install
 npm run seed   # create the database and fill it with demo offers
 npm run dev    # http://localhost:3000, restarts on file changes
+npm test       # API tests, each run uses a fresh in-memory database
 ```
 
 The server (Express) serves both the website from `client/` and the API under `/api`.
