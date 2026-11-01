@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { db } from '../db.js';
 import { SLOTS, dateError, takenTimes } from '../booking.js';
+import { requireAgent } from '../auth.js';
+import { TYPES, readOffer } from '../offer-input.js';
 
 export const offersRouter = Router();
 
-const TYPES = ['Flat', 'Penthouse', 'House'];
 const SORTS = {
   'price-asc': 'price ASC',
   'price-desc': 'price DESC',
@@ -132,4 +133,66 @@ offersRouter.get('/:id/slots', (req, res) => {
 
   const taken = takenTimes(id, date);
   res.json({ date, slots: SLOTS.map((time) => ({ time, free: !taken.includes(time) })) });
+});
+
+/* ------------------------ for logged-in agents only ------------------------ */
+const saveImages = (offerId, images) => {
+  db.prepare('DELETE FROM offer_images WHERE offer_id = ?').run(offerId);
+  const insert = db.prepare('INSERT INTO offer_images (offer_id, url, position) VALUES (?, ?, ?)');
+  images.forEach((url, i) => insert.run(offerId, url, i));
+};
+
+// Writes the offer and its photos together: either both are saved or nothing is
+function inTransaction(work) {
+  db.exec('BEGIN');
+  try {
+    const result = work();
+    db.exec('COMMIT');
+    return result;
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+
+const COLUMNS = ['title', 'city', 'price', 'area', 'rooms', 'beds', 'baths', 'type', 'floor', 'year', 'terrace', 'description'];
+
+// POST /api/offers  { title, city, price, ..., images: ["images/apartment1.jpg"] }
+offersRouter.post('/', requireAgent, (req, res) => {
+  const { errors, offer } = readOffer(req.body);
+  if (errors) return res.status(400).json({ error: 'Please check the form.', errors });
+
+  const id = inTransaction(() => {
+    const { lastInsertRowid } = db.prepare(
+      `INSERT INTO offers (${COLUMNS.join(', ')}) VALUES (${COLUMNS.map((c) => `:${c}`).join(', ')})`
+    ).run(Object.fromEntries(COLUMNS.map((c) => [c, offer[c]])));
+    saveImages(Number(lastInsertRowid), offer.images);
+    return Number(lastInsertRowid);
+  });
+  res.status(201).json(withImages([db.prepare('SELECT * FROM offers WHERE id = ?').get(id)])[0]);
+});
+
+// PUT /api/offers/3  (the whole offer, same fields as POST)
+offersRouter.put('/:id', requireAgent, (req, res) => {
+  const id = Number(req.params.id);
+  const exists = Number.isInteger(id) && db.prepare('SELECT id FROM offers WHERE id = ?').get(id);
+  if (!exists) return res.status(404).json({ error: 'Offer not found' });
+
+  const { errors, offer } = readOffer(req.body);
+  if (errors) return res.status(400).json({ error: 'Please check the form.', errors });
+
+  inTransaction(() => {
+    db.prepare(`UPDATE offers SET ${COLUMNS.map((c) => `${c} = :${c}`).join(', ')} WHERE id = :id`)
+      .run({ id, ...Object.fromEntries(COLUMNS.map((c) => [c, offer[c]])) });
+    saveImages(id, offer.images);
+  });
+  res.json(withImages([db.prepare('SELECT * FROM offers WHERE id = ?').get(id)])[0]);
+});
+
+// DELETE /api/offers/3  (its photos and viewings are removed too, see ON DELETE CASCADE)
+offersRouter.delete('/:id', requireAgent, (req, res) => {
+  const id = Number(req.params.id);
+  const { changes } = Number.isInteger(id) ? db.prepare('DELETE FROM offers WHERE id = ?').run(id) : { changes: 0 };
+  if (!changes) return res.status(404).json({ error: 'Offer not found' });
+  res.status(204).end();
 });

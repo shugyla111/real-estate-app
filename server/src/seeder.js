@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { db } from './db.js';
+import { createAgent } from './auth.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -29,4 +30,13 @@ export function seed() {
     throw err;
   }
   return offers.length;
+}
+
+// Demo login for the admin panel (see README). Created only once.
+export const DEMO_AGENT = { name: 'Demo Agent', email: 'agent@realestate.example', password: 'demo-agent-2026' };
+
+export function seedDemoAgent() {
+  const exists = db.prepare('SELECT id FROM agents WHERE email = ?').get(DEMO_AGENT.email);
+  if (!exists) createAgent(DEMO_AGENT);
+  return !exists;
 }

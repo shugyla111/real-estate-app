@@ -54,3 +54,19 @@ CREATE TABLE IF NOT EXISTS subscribers (
 );
 
 CREATE INDEX IF NOT EXISTS idx_offer_images_offer ON offer_images (offer_id, position);
+
+-- Agents log in to the admin panel. The password is stored only as a scrypt hash.
+CREATE TABLE IF NOT EXISTS agents (
+  id            INTEGER PRIMARY KEY,
+  name          TEXT NOT NULL,
+  email         TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- One row per login. The browser keeps the token in a cookie; here only its SHA-256 hash is stored.
+CREATE TABLE IF NOT EXISTS sessions (
+  token_hash TEXT PRIMARY KEY,
+  agent_id   INTEGER NOT NULL REFERENCES agents(id) ON DELETE CASCADE,
+  expires_at TEXT NOT NULL
+);

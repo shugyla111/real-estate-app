@@ -5,6 +5,8 @@ import { db } from './db.js';
 import { offersRouter } from './routes/offers.js';
 import { viewingsRouter } from './routes/viewings.js';
 import { contactRouter, newsletterRouter } from './routes/forms.js';
+import { authRouter } from './routes/auth.js';
+import { adminRouter } from './routes/admin.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const clientDir = join(here, '..', '..', 'client');
@@ -22,6 +24,8 @@ app.use('/api/offers', offersRouter);
 app.use('/api/viewings', viewingsRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/newsletter', newsletterRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 // Unknown API address -> JSON error instead of an HTML page
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));

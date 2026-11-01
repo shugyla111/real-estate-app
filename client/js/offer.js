@@ -27,7 +27,7 @@ function renderOffer() {
   $('o-desc').innerHTML = [
     `This ${offer.type.toLowerCase()} in ${offer.city} offers ${offer.area} m² of living space, ${offer.rooms} rooms and ${offer.baths} bathroom${offer.baths > 1 ? 's' : ''}.`,
     offer.description || 'Replace this demo text with your own description of the property: the layout, the light, the neighbourhood and what makes it special.'
-  ].map((p) => `<p>${p}</p>`).join('');
+  ].map((p) => `<p>${esc(p)}</p>`).join('');
 
   const chars = {
     'City': offer.city,
@@ -41,7 +41,7 @@ function renderOffer() {
     'Year built': offer.year
   };
   $('o-chars').innerHTML = Object.entries(chars)
-    .map(([key, value]) => `<div><dt>${key}</dt><dd>${value}</dd></div>`).join('');
+    .map(([key, value]) => `<div><dt>${key}</dt><dd>${esc(value)}</dd></div>`).join('');
 }
 
 /* ------------------- 2. Gallery with full-screen viewer ------------------- */
@@ -54,7 +54,7 @@ function initGallery() {
   let current = 0;
 
   thumbs.innerHTML = imgs.map((src, i) =>
-    `<button type="button" data-i="${i}" aria-label="Show photo ${i + 1}"><img src="${src}" alt=""></button>`
+    `<button type="button" data-i="${i}" aria-label="Show photo ${i + 1}"><img src="${esc(src)}" alt=""></button>`
   ).join('');
 
   function setCurrent(i) {

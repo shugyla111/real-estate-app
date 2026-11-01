@@ -3,26 +3,37 @@ import { once } from 'node:events';
 
 export async function startServer() {
   process.env.DB_PATH = ':memory:';
+  const { db } = await import('../src/db.js');
+  // A test file must not import anything from src/ at the top: that opens the real app.db
+  // before DB_PATH is set. Stop instead of wiping real data.
+  if (db.location() !== null) throw new Error(`Tests must use an in-memory database, got ${db.location()}`);
   const { app } = await import('../src/app.js');
-  const { seed } = await import('../src/seeder.js');
+  const { seed, seedDemoAgent, DEMO_AGENT } = await import('../src/seeder.js');
   seed();
+  seedDemoAgent();
 
   const server = app.listen(0);
   await once(server, 'listening');
   const base = `http://localhost:${server.address().port}`;
 
-  const call = async (path, options) => {
-    const res = await fetch(base + path, options);
-    return { status: res.status, body: await res.json() };
+  // cookie: the "sid=..." string from a login answer, to call as a logged-in agent
+  const call = async (method, path, data, cookie) => {
+    const headers = {};
+    if (data !== undefined) headers['Content-Type'] = 'application/json';
+    if (cookie) headers.Cookie = cookie;
+    const res = await fetch(base + path, {
+      method, headers, body: data === undefined ? undefined : (typeof data === 'string' ? data : JSON.stringify(data))
+    });
+    const text = await res.text();
+    return { status: res.status, body: text ? JSON.parse(text) : null, headers: res.headers };
   };
 
   return {
-    get: (path) => call(path),
-    post: (path, data) => call(path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: typeof data === 'string' ? data : JSON.stringify(data)
-    }),
+    get: (path, cookie) => call('GET', path, undefined, cookie),
+    post: (path, data, cookie) => call('POST', path, data, cookie),
+    put: (path, data, cookie) => call('PUT', path, data, cookie),
+    del: (path, cookie) => call('DELETE', path, undefined, cookie),
+    demoAgent: DEMO_AGENT,
     close: () => server.close()
   };
 }

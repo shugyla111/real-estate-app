@@ -1,6 +1,6 @@
 # Real Estate
 
-A front-end practice project: a real estate agency website (home page, search, offer, saved offers, testimonials, about, contact).
+A front-end practice project: a real estate agency website (home page, search, offer, saved offers, testimonials, about, contact, agent dashboard).
 
 ## Run locally
 
@@ -27,6 +27,20 @@ Open the site through the server (http://localhost:3000), not as a file or via L
 | POST | `/api/viewings` | Book a viewing (`409` if the time is taken) |
 | POST | `/api/contact` | Message from the contact form |
 | POST | `/api/newsletter` | Newsletter subscription |
+| POST | `/api/auth/login` · `/api/auth/logout`, GET `/api/auth/me` | Agent login (session cookie) |
+| POST · PUT · DELETE | `/api/offers`, `/api/offers/:id` | Add, change, delete offers (agents only) |
+| GET | `/api/admin/viewings` · `/messages` · `/subscribers` | Lists for the dashboard (agents only) |
+| DELETE | `/api/admin/viewings/:id` | Cancel a viewing (agents only) |
+
+`GET /api/offers?id=1&id=4` returns only these offers (used by the Saved offers page).
+
+### Agent dashboard
+
+Agents log in at `/login.html` (link "Agent login" in the footer) and manage offers, viewings, messages and subscribers at `/admin.html`.
+
+- Demo login, created by `npm run seed`: **agent@realestate.example** / **demo-agent-2026**. Change or remove it before putting the site online.
+- Add a real agent: `npm run create-agent -- maria@agency.es "Maria Lopez"` prints a random password.
+- Passwords are stored as scrypt hashes. The session lives in an httpOnly cookie for 7 days; after 5 wrong passwords the login is blocked for 15 minutes.
 The SQLite database file is `server/data/app.db` (not in git; recreate it with `npm run seed`).
 
 ## Demo data
