@@ -1,0 +1,17 @@
+# Render Blueprint: Render reads this file and sets up the service.
+# Free plan: the service sleeps after 15 minutes without visitors, and files are not kept
+# between restarts, so the database starts again from the demo data (see seedIfEmpty).
+services:
+  - type: web
+    name: real-estate-app
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production

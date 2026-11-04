@@ -40,3 +40,13 @@ export function seedDemoAgent() {
   if (!exists) createAgent(DEMO_AGENT);
   return !exists;
 }
+
+// On a fresh database (for example after a restart on a free host, where files are not kept)
+// put the demo offers and the demo agent in. A database that already has offers is left alone.
+export function seedIfEmpty() {
+  const { count } = db.prepare('SELECT COUNT(*) AS count FROM offers').get();
+  if (count > 0) return false;
+  seed();
+  seedDemoAgent();
+  return true;
+}

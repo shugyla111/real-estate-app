@@ -33,6 +33,7 @@ export async function startServer() {
     post: (path, data, cookie) => call('POST', path, data, cookie),
     put: (path, data, cookie) => call('PUT', path, data, cookie),
     del: (path, cookie) => call('DELETE', path, undefined, cookie),
+    base,
     demoAgent: DEMO_AGENT,
     close: () => server.close()
   };

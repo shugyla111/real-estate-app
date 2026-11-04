@@ -98,3 +98,9 @@ test('unknown API address gives a JSON 404', async () => {
   assert.equal(status, 404);
   assert.equal(body.error, 'Not found');
 });
+
+test('seedIfEmpty does not touch a database that already has offers', async () => {
+  const { seedIfEmpty } = await import('../src/seeder.js');
+  assert.equal(seedIfEmpty(), false);
+  assert.equal((await api.get('/api/health')).body.offers, 6);
+});

@@ -12,6 +12,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const clientDir = join(here, '..', '..', 'client');
 
 export const app = express();
+// On a host like Render every request comes through their proxy. This makes req.ip the visitor's
+// address (from X-Forwarded-For), so the login lock blocks one visitor, not everybody.
+app.set('trust proxy', 1);
 app.use(express.json());
 
 // Quick check that the server and the database answer

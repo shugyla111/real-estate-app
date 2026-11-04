@@ -135,3 +135,13 @@ test('after 5 wrong passwords the login is blocked for a while', async () => {
   const res = await api.post('/api/auth/login', { email: DEMO_AGENT.email, password: DEMO_AGENT.password });
   assert.equal(res.status, 429);
 });
+
+test('behind a proxy each visitor has their own login lock', async () => {
+  // The previous test locked out 127.0.0.1. A visitor with another address (X-Forwarded-For) can still log in.
+  const res = await fetch(`${api.base}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': '203.0.113.7' },
+    body: JSON.stringify({ email: DEMO_AGENT.email, password: DEMO_AGENT.password })
+  });
+  assert.equal(res.status, 200);
+});

@@ -43,6 +43,18 @@ Agents log in at `/login.html` (link "Agent login" in the footer) and manage off
 - Passwords are stored as scrypt hashes. The session lives in an httpOnly cookie for 7 days; after 5 wrong passwords the login is blocked for 15 minutes.
 The SQLite database file is `server/data/app.db` (not in git; recreate it with `npm run seed`).
 
+## Deploy (Render, free plan)
+
+The repository has a `render.yaml` blueprint.
+
+1. On [render.com](https://render.com) sign in with GitHub.
+2. **New → Blueprint**, choose this repository, confirm.
+3. Render installs and starts the server from `server/` (Node 24, `NODE_ENV=production`).
+
+On the free plan the service sleeps after 15 minutes without visitors (the first visit then takes up to a minute),
+and files are not kept between restarts. On every start with an empty database the server adds the demo offers and the demo agent,
+so bookings, messages and changes made in the dashboard disappear after a restart.
+
 ## Demo data
 
 All content is for demonstration only:

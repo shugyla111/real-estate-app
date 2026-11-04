@@ -824,3 +824,7 @@ body.lb-open { overflow: hidden; }
   .admin-field--city { grid-column: auto; }
   .admin-tabs button { padding: 10px 12px; font-size: 12px; }
 }
+
+.login__demo { margin-top: 24px; padding: 14px 16px; border-left: 3px solid var(--color-primary); background: var(--color-bg-soft); font-size: 13px; line-height: 1.6; }
+.login__demo p + p { margin-top: 6px; }
+.login__demo code { font-size: 13px; font-weight: 600; user-select: all; }
